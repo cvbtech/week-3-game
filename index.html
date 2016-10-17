@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Hangman by Tom McCrary</title>
+ </head>
+ <body>
+ <div id="spaces">
+ 
+ </div>
+ <script type="text/javascript">
+
+	function isInArray(value, array) {
+		return array.indexOf(value) > -1;
+	}
+
+	function countMatches(word, array) {
+		var matches=0;
+
+		for (var i=0; i<array.length; i++) {
+
+			matches = matches + (word.split(array[i]).length-1);
+	
+		}
+
+		return matches;
+	}
+
+	function wordProgress(word, array) {
+		var wordDisplay = "";
+
+		for (var i=0; i<word.length; i++)
+		{
+			if (array.indexOf(word[i]) > -1)
+			{
+				wordDisplay = wordDisplay + word[i] + ' ';
+			} else {
+				wordDisplay = wordDisplay + '_ ';
+			}
+		}
+
+		return wordDisplay;
+
+	}
+
+	//wordList Array
+	var wordList=['madonna', 'determined', 'javascript', 'apache', 'prince', 'pizza', 'walking', 'google', 'peanut', 'apple', 'sandwich', 'kangaroo', 'jump', 'igloo', 'random', 'given', 'piano', 'chicago', 'typewriter'];
+
+	//choose random word from word list
+	var randomWordChoice = wordList[Math.floor(Math.random() * wordList.length)];
+
+	var playerInput;
+	var playerInputArray = [];
+
+	console.log (wordList.length);
+	console.log (randomWordChoice);
+	console.log (randomWordChoice.length);
+
+	//each time keystroke push into selected array
+	document.onkeyup = function(event) {
+		
+		playerInput = String.fromCharCode(event.keyCode).toLowerCase();
+
+		console.log(playerInput);
+
+		console.log(playerInputArray);
+
+		if (playerInput != '' && isInArray(playerInput, playerInputArray) === false)
+		{
+			playerInputArray.push(playerInput);
+
+			if(isInArray(playerInput, randomWordChoice) === true)
+			{
+				console.log(playerInput + ' in word');
+			} else {
+				console.log (playerInput + ' not in word');
+			}
+
+			var matches = countMatches(randomWordChoice, playerInputArray);
+
+			console.log(wordProgress(randomWordChoice, playerInputArray));
+
+			if (matches === randomWordChoice.length)
+			{
+				console.log('You Win!!!');
+			}
+			
+		}
+
+	}
+
+
+ </script>
+  
+ </body>
+</html>
