@@ -7,12 +7,46 @@
   <meta name="Keywords" content="">
   <meta name="Description" content="">
   <title>Hangman by Tom McCrary</title>
+  <link href="https://fonts.googleapis.com/css?family=Coming+Soon" rel="stylesheet">
+  <style>
+	body {
+	  font-family: 'Coming Soon', cursive;
+	  text-align: center;
+	  background-image: url("assets/images/hangman.png");
+	  background-color: black;
+	  color: white;
+	}
+	p {
+	  font-size: 2em;
+	  color: white;
+	}
+	.warning {
+	  font-size: 20pt;
+	  font-weight: bold;
+	  color: red;
+	}
+	.guesses {
+	  font-size: 1.5em;
+	  font-weight: bold;
+	  color: orange;
+	}
+	.status {
+	  font-size: 60pt;
+	  font-weight: inherit;
+	}
+  </style>
  </head>
  <body>
- <div id="spaces">
- 
+ <div id="start">
+ </div>
+ <div id="progress">
+ </div>
+ <div id="warning">
+ </div>
+ <div id="html">
  </div>
  <script type="text/javascript">
+ 	var wins = 0;
 
 	function isInArray(value, array) {
 		return array.indexOf(value) > -1;
@@ -30,70 +64,132 @@
 		return matches;
 	}
 
-	function wordProgress(word, array) {
+	function wordProgress(word, array, guessesRemaining) {
 		var wordDisplay = "";
+
+		wordDisplay = '<p>';
 
 		for (var i=0; i<word.length; i++)
 		{
-			if (array.indexOf(word[i]) > -1)
+			if (array.indexOf(word[i]) > -1 || guessesRemaining == 0)
 			{
-				wordDisplay = wordDisplay + word[i] + ' ';
+				wordDisplay += word[i] + ' ';
 			} else {
-				wordDisplay = wordDisplay + '_ ';
+				wordDisplay += '_ ';
 			}
 		}
+
+		wordDisplay += '</p>';
 
 		return wordDisplay;
 
 	}
 
-	//wordList Array
-	var wordList=['madonna', 'determined', 'javascript', 'apache', 'prince', 'pizza', 'walking', 'google', 'peanut', 'apple', 'sandwich', 'kangaroo', 'jump', 'igloo', 'random', 'given', 'piano', 'chicago', 'typewriter'];
+	function playGame() {
 
-	//choose random word from word list
-	var randomWordChoice = wordList[Math.floor(Math.random() * wordList.length)];
+		//wordList Array
+		var wordList=['madonna', 'determined', 'javascript', 'apache', 'prince', 'pizza', 'walking', 'google', 'peanut', 'apple', 'sandwich', 'kangaroo', 'jump', 'igloo', 'random', 'given', 'piano', 'chicago', 'typewriter', 'zoology', 'biology', 'xylophone', 'jungle', 'peppermint', 'english', 'orlando', 'cotton'];
 
-	var playerInput;
-	var playerInputArray = [];
+		//choose random word from word list
+		var randomWordChoice = wordList[Math.floor(Math.random() * wordList.length)];
 
-	console.log (wordList.length);
-	console.log (randomWordChoice);
-	console.log (randomWordChoice.length);
+		var playerInput;
+		var playerInputArray = [];
+		var matches = 0;
+		var alphaExp = /^[a-zA-Z]+$/;
+		var missedGuesses = 0;
+		var maxGuesses = 6;
+		var guessesRemaining = maxGuesses;
+		var keyPressCount = 0;
 
-	//each time keystroke push into selected array
-	document.onkeyup = function(event) {
-		
-		playerInput = String.fromCharCode(event.keyCode).toLowerCase();
+		//get keystroke
+		document.onkeyup = function(event) {
 
-		console.log(playerInput);
-
-		console.log(playerInputArray);
-
-		if (playerInput != '' && isInArray(playerInput, playerInputArray) === false)
-		{
-			playerInputArray.push(playerInput);
-
-			if(isInArray(playerInput, randomWordChoice) === true)
+			if (keyPressCount === 0)
 			{
-				console.log(playerInput + ' in word');
-			} else {
-				console.log (playerInput + ' not in word');
-			}
+				document.getElementById('start').innerHTML='<h1 class="start">To play, enter any letter from a-z</h1>';
+				document.getElementById('warning').innerHTML='';
+			} 
 
-			var matches = countMatches(randomWordChoice, playerInputArray);
-
-			console.log(wordProgress(randomWordChoice, playerInputArray));
-
-			if (matches === randomWordChoice.length)
-			{
-				console.log('You Win!!!');
-			}
+			//increment keyPressCount
+			keyPressCount++;
 			
+			//set playerInput to lowercase keystroke value
+			playerInput = String.fromCharCode(event.keyCode).toLowerCase();
+
+			//ignore keystrokes that have already been entered
+			if (playerInput != '' && isInArray(playerInput, playerInputArray) === false)
+			{
+				//check # of matches against word length
+				if (matches < randomWordChoice.length)
+				{
+					//push keystroke is letter into input array
+					if (playerInput.match(alphaExp) != null)
+					{
+						playerInputArray.push(playerInput);
+					}
+
+					//check to see if keystroke letter is in word
+					if(isInArray(playerInput, randomWordChoice) === true)
+					{
+						//console.log(playerInput + ' in word');
+						//document.getElementById('warning').innerHTML='<p>playerInput + ' in word</p>';
+					} else {
+						if (playerInput.match(alphaExp)==null)
+						{
+							//console.log('Only enter letters a-z');
+							document.getElementById('warning').innerHTML='<p class="warning">Only enter letters a-z</p>';
+						} else {
+							//console.log (playerInput + ' is not in the word');
+							document.getElementById('warning').innerHTML='<p class="warning">Sorry, the letter ' + playerInput + ' is not in the word</p>';
+							missedGuesses++;
+							guessesRemaining = maxGuesses - missedGuesses;
+
+							if (guessesRemaining == 0)
+							{
+								document.getElementById('warning').innerHTML='<h1 class="status">You Lost!!!</h1><p>Press any key to play again.</p>';
+
+								playGame();
+							}
+						}
+					}
+
+
+				}
+
+				//console.log(wordProgress(randomWordChoice, playerInputArray));
+				document.getElementById('progress').innerHTML=(wordProgress(randomWordChoice, playerInputArray, guessesRemaining));
+
+				//set the number of matches (accounting for words that have duplicate letters
+				matches = countMatches(randomWordChoice, playerInputArray);
+				
+				if (matches === randomWordChoice.length)
+				{
+					document.getElementById('warning').innerHTML='<h1 class="status">You Won!!!</h1><p>Press any key to play again.</p>';
+					wins++;
+
+					playGame();
+				}
+
+				var html = 
+				'<p>Wins: ' + wins + '</p>' +
+				'<p class="guesses">Number of Guesses Remaining: ' + guessesRemaining + '</p>' +
+				'<p>Letters Already Guessed: ' + playerInputArray + '</p>';
+
+				document.getElementById('html').innerHTML=html;
+			
+				
+			} else {
+				document.getElementById('warning').innerHTML='<p class="warning">You already guessed ' + playerInput + '</p>';
+			}
+
 		}
 
 	}
 
+	document.getElementById('start').innerHTML='<h1>Press any key to get started!</h1>';
 
+	playGame();
  </script>
   
  </body>
