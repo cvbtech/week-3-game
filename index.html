@@ -132,15 +132,12 @@
 					//check to see if keystroke letter is in word
 					if(isInArray(playerInput, randomWordChoice) === true)
 					{
-						//console.log(playerInput + ' in word');
 						//document.getElementById('warning').innerHTML='<p>playerInput + ' in word</p>';
 					} else {
 						if (playerInput.match(alphaExp)==null)
 						{
-							//console.log('Only enter letters a-z');
 							document.getElementById('warning').innerHTML='<p class="warning">Only enter letters a-z</p>';
 						} else {
-							//console.log (playerInput + ' is not in the word');
 							document.getElementById('warning').innerHTML='<p class="warning">Sorry, the letter ' + playerInput + ' is not in the word</p>';
 							missedGuesses++;
 							guessesRemaining = maxGuesses - missedGuesses;
@@ -157,7 +154,6 @@
 
 				}
 
-				//console.log(wordProgress(randomWordChoice, playerInputArray));
 				document.getElementById('progress').innerHTML=(wordProgress(randomWordChoice, playerInputArray, guessesRemaining));
 
 				//set the number of matches (accounting for words that have duplicate letters
