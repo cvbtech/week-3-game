@@ -1,0 +1,25 @@
+body {
+  font-family: 'Coming Soon', cursive;
+  text-align: center;
+  background-image: url("../images/hangman.png");
+  background-color: black;
+  color: white;
+}
+p {
+  font-size: 2em;
+  color: white;
+}
+.warning {
+  font-size: 20pt;
+  font-weight: bold;
+  color: red;
+}
+.guesses {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: orange;
+}
+.status {
+  font-size: 60pt;
+  font-weight: inherit;
+}
