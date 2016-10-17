@@ -5,9 +5,15 @@ body {
   background-color: black;
   color: white;
 }
+h1 {
+	font-size: 20pt;
+	font-weight: bold;
+	line-height: 2;
+}
 p {
   font-size: 2em;
   color: white;
+  line-height: 2;
 }
 .warning {
   font-size: 20pt;
