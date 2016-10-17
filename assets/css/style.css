@@ -2,6 +2,8 @@ body {
   font-family: 'Coming Soon', cursive;
   text-align: center;
   background-image: url("../images/hangman.png");
+  background-repeat: no-repeat;
+  background-position: center top;
   background-color: black;
   color: white;
 }
